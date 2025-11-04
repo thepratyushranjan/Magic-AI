@@ -1,7 +1,7 @@
 # Magic-AI
 
 ## Overview
-Simple FastAPI service that exposes an agent powered by Google GenAI. It requires a `GOOGLE_API_KEY` and runs a server on port `9999`.
+Simple FastAPI service that exposes an agent powered by Google GenAI. It requires a `GOOGLE_API_KEY` and runs a server on port `8000`.
 
 ## Prerequisites
 - **Python**: 3.12+
@@ -10,7 +10,7 @@ Simple FastAPI service that exposes an agent powered by Google GenAI. It require
 
 ## 1) Clone the repository
 ```bash
-git clone <your-repo-url>
+git clone https://github.com/thepratyushranjan/Magic-AI.git
 cd Magic-AI
 ```
 
@@ -41,27 +41,27 @@ export GOOGLE_API_KEY="your-api-key-here"
 ```bash
 uv run main.py
 ```
-The server starts at `http://0.0.0.0:9999`.
+The server starts at `http://0.0.0.0:8000`.
 
 ## 6) Verify the service
 - Health check:
 ```bash
-curl http://localhost:9999/health
+curl http://localhost:8000/health
 ```
 - Agent info:
 ```bash
-curl http://localhost:9999/agent-info
+curl http://localhost:8000/agent-info
 ```
 
 ## Notes
 - CORS is enabled for all origins by default.
 - If you see an error about `GOOGLE_API_KEY` not set, ensure your `.env` exists in the project root or the variable is exported in your shell.
-- To change the port, edit `port=9999` in `main.py`.
+- To change the port, edit `port=8000` in `main.py`.
 
 ## Project Structure (simplified)
 ```
 Magic-AI/
-  main.py                # Starts FastAPI (uvicorn) server on port 9999
+  main.py                # Starts FastAPI (uvicorn) server on port 8000
   first_agent/
     agent.py             # Defines the root agent and loads GOOGLE_API_KEY
   requirements.txt
