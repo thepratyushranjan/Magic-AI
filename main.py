@@ -4,6 +4,7 @@ import uvicorn
 from fastapi import FastAPI
 from google.adk.cli.fast_api import get_fast_api_app
 from first_agent import root_agent
+from first_agent import agent as mcp_agent_module
 
 
 # --- Base setup ---
@@ -36,12 +37,37 @@ async def agent_info():
     }
 
 
+@app.get("/mcp-status")
+async def mcp_status():
+    """Return MCP connection status and basic info."""
+    connection_string_set = os.getenv("RAG_MCP_CONNECTION_STRING") is not None
+    connected = getattr(mcp_agent_module, "mcp_session", None) is not None
+    tools_count = len(getattr(mcp_agent_module, "mcp_tools", []))
+    return {
+        "connected": connected,
+        "tools_count": tools_count,
+        "connection_string_set": connection_string_set,
+    }
+
+
+@app.get("/mcp-tools")
+async def mcp_tools():
+    """List available MCP tools (name and description)."""
+    tools = []
+    for tool in getattr(mcp_agent_module, "mcp_tools", []):
+        tools.append({
+            "name": getattr(tool, "__name__", None),
+            "description": getattr(tool, "__doc__", None),
+        })
+    return {"tools": tools}
+
+
 # --- Entry point ---
 if __name__ == "__main__":
     print("Starting FastAPI server...")
     uvicorn.run(
         app,
         host="0.0.0.0",
-        port=8000,
+        port=8069,
         reload=False
     )

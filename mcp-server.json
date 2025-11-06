@@ -1,0 +1,6 @@
+{
+  "cloudtuner-mcp": {
+    "transport": "sse",
+    "url": "${RAG_MCP_CONNECTION_STRING}"
+  }
+}
