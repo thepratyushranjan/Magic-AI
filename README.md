@@ -58,6 +58,18 @@ curl http://localhost:8000/agent-info
 - If you see an error about `GOOGLE_API_KEY` not set, ensure your `.env` exists in the project root or the variable is exported in your shell.
 - To change the port, edit `port=8000` in `main.py`.
 
+## Memory System
+- **Short-term memory**: Automatically tracks conversation context within a session
+- **Long-term memory**: Must be manually saved using `/sessions/{id}/save-to-memory`
+- **⚠️ Important**: Using `InMemoryMemoryService` - all memory data is lost when server restarts
+- For production, consider using a persistent memory service
+
+## Troubleshooting
+- Check server logs for detailed error messages
+- All operations are logged with timestamps
+- Empty sessions cannot be saved to memory
+- Sessions must exist before they can be saved
+
 ## Project Structure (simplified)
 ```
 Magic-AI/
