@@ -1,8 +1,14 @@
 import os
 from dotenv import load_dotenv
 from google.adk.agents.llm_agent import Agent
-from google.genai import Client
-from google.adk.tools import load_memory  # Tool to query long-term memory
+from google.adk.tools import load_memory
+from google.adk.sessions import InMemorySessionService
+from google.adk.memory import InMemoryMemoryService
+from google.adk.runners import Runner
+
+# Application constants
+APP_NAME = "first_agent"
+USER_ID = "default_user"
 
 # Mock tool implementation
 def get_current_time(city: str) -> dict:
@@ -32,7 +38,19 @@ root_agent = Agent(
     
     When a user asks about something you discussed before, use the load_memory tool to search past conversations.
     Be conversational and remember context from the current session naturally.""",
-    tools=[get_current_time, load_memory],  # Include memory tool
+    tools=[get_current_time, load_memory],
+)
+
+# Initialize Services
+session_service = InMemorySessionService()
+memory_service = InMemoryMemoryService()
+
+# Initialize Runner
+runner = Runner(
+    agent=root_agent,
+    app_name=APP_NAME,
+    session_service=session_service,
+    memory_service=memory_service
 )
 
 # Optional: Callback to auto-save sessions to long-term memory

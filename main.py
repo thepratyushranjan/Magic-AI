@@ -7,12 +7,17 @@ from pydantic import BaseModel
 from typing import Optional, List
 from dotenv import load_dotenv
 from google.adk.cli.fast_api import get_fast_api_app
-from google.adk.sessions import InMemorySessionService
-from google.adk.memory import InMemoryMemoryService
-from google.adk.runners import Runner
-from google.adk.agents.llm_agent import Agent
-from google.adk.tools import load_memory
 from google.genai.types import Content, Part
+
+# Import agent, services, and runner from first_agent module
+from first_agent.agent import (
+    root_agent,
+    runner,
+    session_service,
+    memory_service,
+    APP_NAME,
+    USER_ID
+)
 
 # --- Base setup ---
 AGENT_DIR = os.path.abspath(os.path.dirname(__file__))
@@ -20,42 +25,6 @@ sys.path.append(AGENT_DIR)
 
 # Load environment variables
 load_dotenv()
-
-APP_NAME = "first_agent"  # Must match the agent directory name
-USER_ID = "default_user"  # In production, use actual user IDs
-
-# --- Define tools ---
-def get_current_time(city: str) -> dict:
-    """Returns the current time in a specified city."""
-    return {"status": "success", "city": city, "time": "10:30 AM"}
-
-# --- Create agent directly here ---
-root_agent = Agent(
-    model='gemini-2.5-flash',
-    name='root_agent',
-    description="A helpful assistant that can tell the current time and remember past conversations.",
-    instruction="""You are a helpful assistant that can:
-    1. Tell the current time in cities using the 'get_current_time' tool
-    2. Remember information from past conversations using the 'load_memory' tool
-    
-    When a user asks about something you discussed before, use the load_memory tool to search past conversations.
-    Be conversational and remember context from the current session naturally.""",
-    tools=[get_current_time, load_memory],
-)
-
-# --- Initialize Services ---
-# These services manage short-term (session) and long-term (memory) storage
-session_service = InMemorySessionService()
-memory_service = InMemoryMemoryService()  # Use InMemoryMemoryService for prototyping
-
-# --- Initialize Runner ---
-# Runner orchestrates the agent with session and memory services
-runner = Runner(
-    agent=root_agent,
-    app_name=APP_NAME,
-    session_service=session_service,
-    memory_service=memory_service
-)
 
 # --- Initialize FastAPI app ---
 app: FastAPI = get_fast_api_app(
